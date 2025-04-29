@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<title>LEARN </title>
+<style>
+  body {
+    margin: 0;
+    background-color: black;
+    color: white;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  #word {
+    font-size: 24px;
+    opacity: 1;
+    transition: opacity 2s ease-in-out;
+    cursor: pointer;
+  }
+
+  #timer {
+    position: absolute;
+    bottom: 20px;
+    font-size: 16px;
+    opacity: 0.7;
+  }
+
+  .fade-in {
+    opacity: 1;
+  }
+
+  .fade-out {
+    opacity: 0;
+  }
+
+  #infoBox {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 250px;
+    background-color: #222;
+    padding: 15px;
+    border: 1px solid #555;
+    display: none;
+    flex-direction: column;
+  }
+
+  #infoBox h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #00ffcc;
+  }
+
+  #infoBox p {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  #closeBtn {
+    margin-top: 10px;
+    background: #444;
+    border: none;
+    color: white;
+    padding: 5px;
+    cursor: pointer;
+  }
+
+</style>
+</head>
+<body>
+
+<div id="word" class="fade-in">करणी माता</div>
+<div id="timer">20</div>
+
+<div id="infoBox">
+  <h3 id="infoTitle">करणी माता</h3>
+  <p id="infoContent">देशनोक (बीकानेर)</p>
+  <button id="closeBtn">बंद करें</button>
+</div>
+
+<script>
+   const words = [
+    "करणी माता", "जीण माता", "साकराया माता", "आशापुरा माता", "कैला देवी माता",
+    "शीतला माता", "ब्रह्माणी माता (सोरसन)", "ब्रह्माणी माता (पल्लू)", "छींंक माता", "आई माता", 
+    "सच्चियाय माता", "लाटियाल माता", "चामुंडा माता", "सुंधा माता", "स्वांगिया माता", 
+    "आवड़ माता", "तनोट माता", "माता रानी भटियाणी", "कैवाय माता", "धधिमती माता", 
+    "भंवल माता", "आवरी माता", "बदली माता", "महामाया माता", "अंबिका माता", 
+    "आमाज माता", "त्रिपुर सुंदरी", "राजेश्वरी माता", "हर्षद माता", "बारवड़ी माता", 
+    "बनमाता", "ज्वाला माता", "शिला माता", "जामवाय माता", "नारायणी माता", 
+    "रानी सती", "नागनेची माता", "कंठेश्वरी माता", "भदाना माता", "नाकटी माता", 
+    "क्षेमकरी माता", "मांकड़ी माता", "जीलड़ी माता", "धौलागढ़ माता", "घेवर माता", 
+    "जलदेवी", "पीपलाद माता", "भ्रमर माता", "अर्बुद माता", "वाकल माता", "हिंगलाज माता"
+  ];
+
+  const locations = {
+    "करणी माता": "देशनोक (बीकानेर)",
+    "जीण माता": "रेवासा (सीकर)",
+    "साकराया माता": "उदयपुरवाटी (सीकर)",
+    "आशापुरा माता": "नाडोल (पाली)",
+    "कैला देवी माता": "त्रिकूट पहाड़ी (करौली)",
+    "शीतला माता": "चाकसू (जयपुर)",
+    "ब्रह्माणी माता (सोरसन)": "सोरसन (बारां)",
+    "ब्रह्माणी माता (पल्लू)": "पल्लू (हनुमानगढ़)",
+    "छींंक माता": "जयपुर",
+    "आई माता": "बिलाड़ा (जोधपुर)",
+    "सच्चियाय माता": "ओंसिया (जोधपुर)",
+    "लाटियाल माता": "फलोदी (जोधपुर)",
+    "चामुंडा माता": "मेहरानगढ़ (जोधपुर)",
+    "सुंधा माता": "जसवंतपुरा की पहाड़ियाँ (भीनमाल, जालौर)",
+    "स्वांगिया माता": "भादरिया (जैसलमेर)",
+    "आवड़ माता": "जैसलमेर",
+    "तनोट माता": "तनोट (जैसलमेर)",
+    "माता रानी भटियाणी": "जोगीदास (जैसलमेर)",
+    "कैवाय माता": "किंणसरिया (डीडवाना, नागौर)",
+    "धधिमती माता": "गोठ मांगलोड (नागौर)",
+    "भंवल माता": "भंवल (नागौर)",
+    "आवरी माता": "निकुंभ (चित्तौड़गढ़)",
+    "बदली माता": "आकौला (चित्तौड़गढ़)",
+    "महामाया माता": "मावली (उदयपुर)",
+    "अंबिका माता": "जगत (उदयपुर)",
+    "आमाज माता": "रीछेड़ (राजसमंद)",
+    "त्रिपुर सुंदरी": "उमराई (तलवाड़ा, बांसवाड़ा)",
+    "राजेश्वरी माता": "भरतपुर",
+    "हर्षद माता": "आभानेरी (दौसा)",
+    "बारवड़ी माता": "चित्तौड़गढ़",
+    "बनमाता": "चित्तौड़गढ़",
+    "ज्वाला माता": "जोबनेर (जयपुर)",
+    "शिला माता": "आमेर (जयपुर)",
+    "जामवाय माता": "जमुवारामगढ़ (जयपुर)",
+    "नारायणी माता": "बरवा पहाड़ी (अलवर)",
+    "रानी सती": "झुंझुनूं",
+    "नागनेची माता": "नागाणा (बालोतरा, बाड़मेर)",
+    "कंठेश्वरी माता": "अज्ञात स्थान",
+    "भदाना माता": "कोटा",
+    "नाकटी माता": "जय भवानीपुरा (जयपुर)",
+    "क्षेमकरी माता": "भीनमाल (जालौर)",
+    "मांकड़ी माता": "नीमाज (पाली)",
+    "जीलड़ी माता": "बहरोड़",
+    "धौलागढ़ माता": "अलवर",
+    "घेवर माता": "राजसमंद",
+    "जलदेवी": "संसेरा (राजसमंद)",
+    "पीपलाद माता": "उनवास (राजसमंद)",
+    "भ्रमर माता": "छोटी सादड़ी (प्रतापगढ़)",
+    "अर्बुद माता": "माउंट आबू",
+    "वाकल माता": "विरात्रा (बाड़मेर)",
+    "हिंगलाज माता": "लासबेला (पाकिस्तान)"
+  };
+  let index = 1;
+  let countdown = 20;
+  let timerRunning = true;
+  let interval;
+
+  const wordDiv = document.getElementById('word');
+  const timerDiv = document.getElementById('timer');
+  const infoBox = document.getElementById('infoBox');
+  const infoTitle = document.getElementById('infoTitle');
+  const infoContent = document.getElementById('infoContent');
+  const closeBtn = document.getElementById('closeBtn');
+
+  function showNextWord() {
+    wordDiv.classList.remove("fade-in");
+    wordDiv.classList.add("fade-out");
+
+    setTimeout(() => {
+      const newWord = words[index];
+      wordDiv.textContent = newWord;
+      wordDiv.classList.remove("fade-out");
+      wordDiv.classList.add("fade-in");
+      index = (index + 1) % words.length;
+    }, 1000);
+  }
+
+  function startTimer() {
+    if (interval) clearInterval(interval);
+    interval = setInterval(() => {
+      if (!timerRunning) return;
+      countdown--;
+      if (countdown <= 0) {
+        countdown = 20;
+        showNextWord();
+      }
+      timerDiv.textContent = countdown;
+    }, 1000);
+  }
+
+  // Word click — pause timer and show info
+  wordDiv.addEventListener('click', () => {
+    timerRunning = false;
+    const currentWord = wordDiv.textContent;
+    infoTitle.textContent = currentWord;
+    infoContent.textContent = locations[currentWord] || "जानकारी उपलब्ध नहीं है।";
+    infoBox.style.display = "flex";
+});
+  // Close info box
+  closeBtn.addEventListener('click', () => {
+    infoBox.style.display = "none";
+    timerRunning = true;
+  });
+
+  // Initial setup
+  timerDiv.textContent = countdown;
+  startTimer();
+</script>
+
+</body>
+</html>
